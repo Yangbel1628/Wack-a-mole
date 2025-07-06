@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>whack-a-mole</title>
+</head>
+<body>
+    <style>
+        body{
+            font-family: Arial, Helvetica, sans-serif;
+            text-align: center;
+            background:url("./images/whack-a-mole.jpeg");
+            background-size:cover;
+        }
+
+        .gamehead , .score{
+            color:gold
+        }
+
+        .board{
+            width:540px;
+            height:540px;
+            background-color:green;
+
+            margin: 0 auto;
+            display:flex;
+            flex-wrap: wrap;
+            background:url("./images/soil.png");
+            border:3px solid white;
+            border-radius: 25px;
+        }
+
+        .board div {
+            /* board = 540 x 540 divided int0 3x3 which is 180x180 per div */
+            width: 180px;
+            height: 180px;
+            background: url("./images/pipe.png");
+            background-size:cover;
+
+
+        }
+
+        .board div img {
+            height: 100px;
+            width: 100px;
+            border-radius: 20px;
+
+            user-select: none;
+            -moz-user-select:none;
+            -webkit-user-drag: none;
+            -webkit-user-select: none;
+            -ms-user-select:none;
+
+        }
+
+        button {
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 20px;
+        }
+    </style>
+
+
+
+    <h1 class="gamehead">Whack a mole</h1>
+    <h2 class="score">0</h2>
+
+    <div class="board"></div>
+    <button onclick="startGame()">Start</button>
+    <button onclick="resetGame()">Reset</button>
+    <audio class="audio11" controls autoplay loop hidden> <source src="./images/WhatsApp Audio 2024-11-11 at 12.25.20_c12073a7.mp3" type="audio/mpeg"></source></audio>
+    <!-- 3X3 board-->
+
+
+
+
+
+
+
+    <script>
+        let currentMoleTile;
+        let currentPlantTile;
+        let moleInterval;
+        let plantInterval;
+        let score = 0;
+        let gameOver = false;
+
+
+
+        window.onload = function () {
+            setupBoard();
+        };
+
+    
+
+
+        function setupBoard() {
+            //set up grid for the game
+            for (let i = 0; i < 9; i++) {
+                let tile = document.createElement("div");
+                tile.id = i.toString();
+                tile.addEventListener('click', selectTile)
+                document.querySelector(".board").appendChild(tile);
+            }
+        }
+
+
+
+
+        function getRandomTile() {
+
+            /*math.random will return from 0 to 1 which is 0 to 9*/
+            let num = Math.floor(Math.random() * 9);
+            return num.toString();
+        };
+
+
+
+        function startGame() {
+            setGame();
+            let audio = document.querySelector(".audio11");
+            audio.play();
+        }
+
+        function setMole() {
+            
+            if(gameOver) 
+                return;
+            
+            if(currentMoleTile) {
+                currentMoleTile.innerHTML = '';
+            }
+
+
+
+            let mole = document.createElement("img");
+            mole.src = "./images/monty-mole.png";
+
+            let num = getRandomTile();
+            if (currentPlantTile && currentPlantTile.id == num) {
+                return;
+            }
+            currentMoleTile = document.getElementById(num);
+            currentMoleTile.appendChild(mole);
+
+           
+        };
+
+        function resetGame() {
+            clearInterval(moleInterval);
+            clearInterval(plantInterval);
+            score = 0;
+            gameOver = false;
+            document.querySelector(".score").innerHTML = "0";
+            
+            let tiles = document.querySelectorAll(".board div");
+            for(let tile of tiles) {
+                tile.innerHTML = "";
+            }
+            
+           
+
+        }
+
+        function setGame() {
+              moleInterval = setInterval(setMole, 1000); //1 sec mole
+              plantInterval = setInterval(setPlant, 2000);// 2 sec plant
+            };
+
+
+        function setPlant() {
+           
+            if(gameOver) 
+                return;
+            
+
+            if(currentPlantTile) {
+                currentPlantTile.innerHTML = '';
+            }
+
+
+            let plant = document.createElement("img");
+            plant.src = "./images/piranha-plant.png";
+
+            let num = getRandomTile();
+            if (currentMoleTile && currentMoleTile.id == num) {
+                return;
+            }
+            currentPlantTile = document.getElementById(num);
+            currentPlantTile.appendChild(plant);
+        };
+
+        function selectTile() {
+            if(gameOver) {
+                return;
+            }
+
+
+            if(this == currentMoleTile) {
+                score += 10;
+                document.querySelector('.score').innerText = score.toString();// update score
+            } else if (this == currentPlantTile) {
+                document.querySelector('.score').innerText = "GAME OVER" + score.toString();
+                gameOver = true;
+            }
+        };
+    </script>
+</body>
+</html>
