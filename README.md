@@ -4,7 +4,7 @@ A fun and interactive browser-based game where players test their reflexes by cl
 <br>
 🔗 Live Demo
 Play it here:
-👉 https://wack-a-mole-pied.vercel.app
+👉 wack-a-mole-alpha.vercel.app
 
 <br>
 ✨ Features
